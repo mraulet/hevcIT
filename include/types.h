@@ -60,3 +60,5 @@ typedef unsigned int         uint32_t;
 #define _UINT64_T
 typedef unsigned long long   uint64_t;
 #endif /* _UINT64_T */
+
+#define pixel int16_t

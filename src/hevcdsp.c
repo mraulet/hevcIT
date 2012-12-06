@@ -49,13 +49,13 @@ static unsigned av_clip_uintp2_c(int a, int p)
 
 #define SET(dst, x) (dst) = (x)
 #define SCALE(dst, x) (dst) = av_clip_int16_c(((x) + add) >> shift)
-#define ADD_AND_SCALE(dst, x) (dst) = av_clip_uintp2_c((dst) + av_clip_int16_c(((x) + add) >> shift), bit_depth)
+#define ADD_AND_SCALE(dst, x) (dst) = av_clip_int16_c(((x) + add) >> shift)// av_clip_uintp2_c((dst) + av_clip_int16_c(((x) + add) >> shift), bit_depth)
 
-void transquant_bypass(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int log2_size, int bit_depth)
+void transquant_bypass(pixel *_dst, int16_t *coeffs, uint32_t _stride, int log2_size, int bit_depth)
 {
     int x, y;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int size = 1 << log2_size;
 
     for (y = 0; y < size; y++) {
@@ -67,11 +67,11 @@ void transquant_bypass(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int log
     }
 }
 
-void transform_skip(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int log2_size, int bit_depth)
+void transform_skip(pixel *_dst, int16_t *coeffs, uint32_t _stride, int log2_size, int bit_depth)
 {
     int x, y;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int size = 1 << log2_size;
     int shift = 15 - bit_depth - log2_size;
 
@@ -92,7 +92,7 @@ void transform_skip(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int log2_s
     }
 }
 
-void transform_4x4_luma_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
+void transform_4x4_luma_add(pixel *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
 {
 #define TR_4x4_LUMA(dst, src, step, assign)                                     \
     do {                                                                        \
@@ -108,8 +108,8 @@ void transform_4x4_luma_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, in
     } while (0)
     
     int i;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int shift = 7;
     int add = 1 << (shift - 1);
     int16_t *src = coeffs;
@@ -149,11 +149,11 @@ void transform_4x4_luma_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, in
 #define TR_4_1(dst, src) TR_4(dst, src, 4, 4, SCALE)
 #define TR_4_2(dst, src) TR_4(dst, src, 1, 1, ADD_AND_SCALE)
 
-void transform_4x4_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
+void transform_4x4_add(pixel *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
 {
     int i;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int shift = 7;
     int add = 1 << (shift - 1);
     int16_t *src = coeffs;
@@ -234,11 +234,11 @@ void transform_4x4_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit
 #define TR_16_2(dst, src) TR_16(dst, src, 1, 1, ADD_AND_SCALE)
 #define TR_32_2(dst, src) TR_32(dst, src, 1, 1, ADD_AND_SCALE)
 
-void transform_8x8_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
+void transform_8x8_add(pixel *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
 {
     int i;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int shift = 7;
     int add = 1 << (shift - 1);
     int16_t *src = coeffs;
@@ -257,11 +257,11 @@ void transform_8x8_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit
     }
 }
 
-void transform_16x16_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
+void transform_16x16_add(pixel *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
 {
     int i;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int shift = 7;
     int add = 1 << (shift - 1);
     int16_t *src = coeffs;
@@ -280,11 +280,11 @@ void transform_16x16_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int b
     }
 }
 
-void transform_32x32_add(uint8_t *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
+void transform_32x32_add(pixel *_dst, int16_t *coeffs, uint32_t _stride, int bit_depth)
 {
     int i;
-    uint8_t *dst = (uint8_t*)_dst;
-    uint32_t stride = _stride / sizeof(uint8_t);
+    pixel *dst = (pixel*)_dst;
+    uint32_t stride = _stride / sizeof(pixel);
     int shift = 7;
     int add = 1 << (shift - 1);
     int16_t *src = coeffs;
