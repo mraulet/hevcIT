@@ -28,7 +28,7 @@
  * @param a value to clip
  * @return clipped value
  */
-static inline int16_t av_clip_int16_c(int a)
+static int16_t av_clip_int16_c(int a)
 {
     if ((a+0x8000) & ~0xFFFF) return (a>>31) ^ 0x7FFF;
     else                      return a;
