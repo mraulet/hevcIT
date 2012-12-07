@@ -49,7 +49,7 @@ static unsigned av_clip_uintp2_c(int a, int p)
 
 #define SET(dst, x) (dst) = (x)
 #define SCALE(dst, x) (dst) = av_clip_int16_c(((x) + add) >> shift)
-#define ADD_AND_SCALE(dst, x) (dst) = av_clip_int16_c(((x) + add) >> shift)// av_clip_uintp2_c((dst) + av_clip_int16_c(((x) + add) >> shift), bit_depth)
+#define ADD_AND_SCALE(dst, x) (dst) = (dst) + av_clip_int16_c(((x) + add) >> shift)
 
 void transquant_bypass(pixel *_dst, int16_t *coeffs, uint32_t _stride, int log2_size, int bit_depth)
 {

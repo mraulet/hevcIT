@@ -1,14 +1,21 @@
 #include "types.h"
 #include "data.h"
 
+pixel dst[32*32];
+pixel src[32*32];
+
 int main(int argc, char *argv[]) {
-    int i, j;
+    int i, j, k;
     int16_t *coeff_p = coeff;
     pixel *dst_ref_p = dst_ref;
+    
     
     for (i = 0; i < sizeof(mode)/2; i ++) {
         int size  = mode[i][0];
         int is_dst   = mode[i][1];
+        
+        for (k = 0; k < 32 * 32; k++)
+            dst[k] = 0;
         
         if(size == 4 && is_dst) {
             transform_4x4_luma_add(dst, coeff_p, 4 * sizeof(pixel), 8);
@@ -40,6 +47,10 @@ int main(int argc, char *argv[]) {
         }
         if(size == 32) {
             transform_32x32_add(dst, coeff_p, 32 * sizeof(pixel), 8);
+            for (j = 0; j < size*size; j++) {
+                if(dst[j]!=dst_ref_p[j])
+                    printf("%d %d\n", dst[j], dst_ref_p[j]);
+            }
         }
         dst_ref_p += size * size;
         coeff_p += size * size;
